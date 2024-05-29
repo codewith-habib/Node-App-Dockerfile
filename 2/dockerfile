@@ -1,0 +1,39 @@
+# An Angular single-page application that consumes the web API provided by the Node.js app.
+#lets build with multi-stages
+
+#Stage 1
+#Using the official Node JS Image
+FROM node:latest as build
+
+#Creating a WORK Directory, can name any 
+WORKDIR /app 
+
+#Copying the Package.json file for installing npm packages
+# * means, all package.json files, ./ means to working directory
+COPY package*.json ./
+
+# Insatlling Packages
+RUN npm install
+# Copying rest of all code
+COPY . .
+
+#building this
+RUN npm run build --prod
+
+#Stage 2
+
+FROM nginx:alpine
+
+#copying build
+# /usr/share/nginx/html, this is default structure for nginx image
+COPY --from=build /app/dist /usr/share/nginx/html 
+
+
+#not remember exact path,so just doing /nginx
+COPY nginx.con /nginx/nginx/con
+
+#Optionally we can expose it and we should to any port
+EXPOSE 3000
+
+#To start the application
+CMD [ "nginx", "-g" ]

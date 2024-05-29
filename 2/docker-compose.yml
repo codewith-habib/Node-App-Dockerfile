@@ -1,0 +1,21 @@
+#first of all defining version
+version: '3.8'
+
+#writing services(containers)
+services:
+  # first service name
+  angular-app:
+    build:
+      context: ./angular-app #folder where it is
+      dockerfile: Dockerfile
+    container_name: node-app #name for container
+    ports:
+      - 4200:3000 #3000 on right bcz we exposed our app on 3000 port in dockerfile and left 3000 bcz we'll access it on 3000
+    depends_on:
+      - node-api
+  node-api:
+    build:
+      context: ./node-api #folder where it is
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
